@@ -47,6 +47,6 @@ export class HttpResponse {
   getReasonPhrase = () => statusCodes[this.statusCode];
 
   getStatusLine = (): string => {
-    return `HTTP/${this.version} ${this.statusCode} ${this.getReasonPhrase}\r\n\r\n`;
+    return `HTTP/${this.version} ${this.statusCode} ${this.getReasonPhrase()}\r\n\r\n`;
   };
 }
