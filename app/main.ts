@@ -1,6 +1,5 @@
 import * as net from "net";
-import type { HttpResponse } from "./model/HttpResponse";
-import { HttpResponseBuilder } from "./builder/HttpResponseBuilder";
+import { HttpResponse } from "./model/HttpResponse";
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
@@ -10,11 +9,10 @@ const server = net.createServer((socket) => {
     socket.end();
   });
 
-  const response: HttpResponse = new HttpResponseBuilder()
-    .withVersion("1.1")
-    .withMethod("GET")
-    .withStatusCode(200)
-    .build();
+  const response: HttpResponse = new HttpResponse();
+  response.setVersion("1.1");
+  response.setMethod("GET");
+  response.setStatusCode(200);
 
   socket.write(response.getStatusLine());
 });
