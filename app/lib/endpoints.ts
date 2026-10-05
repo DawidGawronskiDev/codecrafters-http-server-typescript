@@ -59,7 +59,9 @@ export const endpoints: Map<string, Function> = new Map([
       const path = httpRequest.getPath();
 
       const parts = path.split("/");
-      console.log(parts);
+      const file = parts.slice(parts.lastIndexOf("/") + 1);
+
+      console.log(file);
     },
   ],
 ]);
