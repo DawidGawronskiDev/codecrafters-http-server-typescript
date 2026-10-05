@@ -1,8 +1,8 @@
 import * as net from "net";
 import { HttpResponse } from "./model/HttpResponse";
-import { httpRequestParser } from "./model/HttpRequestParser";
 import { endpoints } from "./lib/endpoints";
 import { config } from "./config";
+import { parseHttpRequest } from "./lib/parse";
 
 const argvs = process.argv.slice(2);
 
@@ -17,7 +17,7 @@ export const server = net.createServer((socket) => {
   });
 
   socket.on("data", (data) => {
-    const httpRequest = httpRequestParser.parse(data.toString());
+    const httpRequest = parseHttpRequest(data.toString());
     const httpResponse: HttpResponse = new HttpResponse();
 
     const path = httpRequest.getPath();

@@ -19,13 +19,3 @@ export class HttpRequest extends HttpMessage {
     return `${statusLineBlock}\r\n${headersSection}\r\n`;
   };
 }
-
-const main = () => {
-  const response: HttpRequest = new HttpRequest();
-  response.setHeader("Host", "localhost:4221");
-  response.setHeader("User-Agent", "curl/7.64.1");
-  response.setHeader("Accept", "*/*");
-  console.log(response.toString());
-};
-
-main();
