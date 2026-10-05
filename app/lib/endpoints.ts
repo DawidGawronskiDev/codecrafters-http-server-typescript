@@ -1,25 +1,23 @@
 import fs from "fs";
 
 import { HttpResponse } from "../model/HttpResponse";
-import { httpRequestParser } from "../model/HttpRequestParser";
+import type { HttpRequest } from "../model/HttpRequest";
 import { config } from "../config";
 
-export const endpoints: Map<string, Function> = new Map([
+export const endpoints: Map<
+  string,
+  (req: HttpRequest, res: HttpResponse) => void
+> = new Map([
   [
     "/",
-    (_: string, res: HttpResponse) => {
+    (_: HttpRequest, res: HttpResponse) => {
       res.setStatusCode(200);
-
-      res.setHeader("Host", "localhost:4221");
-      res.setHeader("User-Agent", "curl/7.64.1");
-      res.setHeader("Accept", "*/*");
     },
   ],
   [
     "/echo",
-    (req: string, res: HttpResponse) => {
-      const httpRequest = httpRequestParser.parse(req);
-      const path = httpRequest.getPath();
+    (req: HttpRequest, res: HttpResponse) => {
+      const path = req.getPath();
 
       const message = path.slice(path.lastIndexOf("/") + 1);
 
@@ -35,9 +33,8 @@ export const endpoints: Map<string, Function> = new Map([
   ],
   [
     "/user-agent",
-    (req: string, res: HttpResponse) => {
-      const httpRequest = httpRequestParser.parse(req);
-      const userAgent = httpRequest.getHeader("User-Agent");
+    (req: HttpRequest, res: HttpResponse) => {
+      const userAgent = req.getHeader("User-Agent");
       if (!userAgent) {
         res.setStatusCode(400);
         return;
@@ -53,19 +50,18 @@ export const endpoints: Map<string, Function> = new Map([
   ],
   [
     "/files",
-    (req: string, res: HttpResponse) => {
+    (req: HttpRequest, res: HttpResponse) => {
       if (!config.directory) {
         res.setStatusCode(400);
         return;
       }
 
-      const httpRequest = httpRequestParser.parse(req);
-      const method = httpRequest.getMethod();
+      const method = req.getMethod();
 
       switch (method) {
         case "GET":
           {
-            const path = httpRequest.getPath();
+            const path = req.getPath();
             const file = path.slice(path.lastIndexOf("/") + 1);
 
             let data: Buffer;
@@ -84,10 +80,10 @@ export const endpoints: Map<string, Function> = new Map([
           break;
         case "POST":
           {
-            const path = httpRequest.getPath();
+            const path = req.getPath();
             const file = path.slice(path.lastIndexOf("/") + 1);
 
-            const body = httpRequest.getBody();
+            const body = req.getBody();
             if (!body) {
               res.setStatusCode(400);
               return;

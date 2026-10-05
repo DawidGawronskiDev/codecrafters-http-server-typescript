@@ -9,8 +9,6 @@ export class HttpMessage {
   protected headers: Map<string, string> = new Map();
   protected body: string = "";
 
-  constructor() {}
-
   getMethod = () => {
     return this.method;
   };

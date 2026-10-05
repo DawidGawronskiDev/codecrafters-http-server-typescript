@@ -17,8 +17,7 @@ export const server = net.createServer((socket) => {
   });
 
   socket.on("data", (data) => {
-    const request = data.toString();
-    const httpRequest = httpRequestParser.parse(request);
+    const httpRequest = httpRequestParser.parse(data.toString());
     const httpResponse: HttpResponse = new HttpResponse();
 
     const path = httpRequest.getPath();
@@ -28,12 +27,9 @@ export const server = net.createServer((socket) => {
     )?.[1];
 
     if (endpoint) {
-      endpoint(request, httpResponse);
+      endpoint(httpRequest, httpResponse);
     } else {
       httpResponse.setStatusCode(404);
-      httpResponse.setHeader("Host", "localhost:4221");
-      httpResponse.setHeader("User-Agent", "curl/7.64.1");
-      httpResponse.setHeader("Accept", "*/*");
     }
 
     socket.write(httpResponse.toString());

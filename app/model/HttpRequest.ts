@@ -3,10 +3,6 @@ import { HttpMessage } from "./HttpMessage";
 export class HttpRequest extends HttpMessage {
   private path: string = "/";
 
-  constructor() {
-    super();
-  }
-
   getPath = () => {
     return this.path;
   };
