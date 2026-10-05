@@ -56,10 +56,10 @@ export const endpoints: Map<string, Function> = new Map([
       }
 
       const httpRequest = httpRequestParser.parse(req);
-      const path = httpRequest.getPath();
 
-      const parts = path.split("/");
-      const file = parts[parts.length - 1];
+      const file = httpRequest
+        .getPath()
+        .slice(httpRequest.getPath().lastIndexOf("/") + 1);
 
       console.log(file);
     },
