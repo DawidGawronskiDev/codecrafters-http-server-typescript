@@ -88,6 +88,7 @@ export const endpoints: Map<string, Function> = new Map([
             const file = path.slice(path.lastIndexOf("/") + 1);
 
             const body = httpRequest.getBody();
+            console.log(body);
             if (!body) {
               res.setStatusCode(400);
               return;
