@@ -63,6 +63,8 @@ const server = net.createServer((socket) => {
 
         httpResponse.setStatusCode(200);
 
+        console.log(userAgent);
+
         httpResponse.setHeader("Content-Type", "text/plain");
         httpResponse.setHeader(
           "Content-Length",
