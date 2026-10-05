@@ -60,22 +60,50 @@ export const endpoints: Map<string, Function> = new Map([
       }
 
       const httpRequest = httpRequestParser.parse(req);
-      const path = httpRequest.getPath();
+      const method = httpRequest.getMethod();
 
-      const file = path.slice(path.lastIndexOf("/") + 1);
+      switch (method) {
+        case "GET":
+          {
+            const path = httpRequest.getPath();
+            const file = path.slice(path.lastIndexOf("/") + 1);
 
-      let data: Buffer;
-      try {
-        data = fs.readFileSync(`${config.directory}/${file}`);
-      } catch {
-        res.setStatusCode(404);
-        return;
+            let data: Buffer;
+            try {
+              data = fs.readFileSync(`${config.directory}/${file}`);
+            } catch {
+              res.setStatusCode(404);
+              return;
+            }
+
+            res.setStatusCode(200);
+            res.setHeader("Content-Type", "application/octet-stream");
+            res.setHeader("Content-Length", data.byteLength.toString());
+            res.setBody(data.toString());
+          }
+          break;
+        case "POST":
+          {
+            const path = httpRequest.getPath();
+            const file = path.slice(path.lastIndexOf("/") + 1);
+
+            const body = httpRequest.getBody();
+            if (!body) {
+              res.setStatusCode(400);
+              return;
+            }
+
+            try {
+              fs.writeFileSync(`${config.directory}/${file}`, body);
+            } catch {
+              res.setStatusCode(500);
+              return;
+            }
+
+            res.setStatusCode(201);
+          }
+          break;
       }
-
-      res.setStatusCode(200);
-      res.setHeader("Content-Type", "application/octet-stream");
-      res.setHeader("Content-Length", data.byteLength.toString());
-      res.setBody(data.toString());
     },
   ],
 ]);
