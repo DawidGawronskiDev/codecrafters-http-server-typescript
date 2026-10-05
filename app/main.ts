@@ -22,17 +22,33 @@ const server = net.createServer((socket) => {
     httpResponse.setVersion("1.1");
     httpResponse.setMethod("GET");
 
-    // Set headers
-    httpResponse.setHeader("Host", "localhost:4221");
-    httpResponse.setHeader("User-Agent", "curl/7.64.1");
-    httpResponse.setHeader("Accpet", "*/*");
+    if (path.startsWith("/echo")) {
+      // TODO: Validation required. Index might be not present.
+      const secondSlashIdx = path.indexOf("/", 1);
+
+      httpResponse.setStatusCode(200);
+
+      httpResponse.setHeader("Content-Type", "text/plain");
+      httpResponse.setHeader("Content-Length", path.length.toString());
+
+      httpResponse.setBody(path.slice(secondSlashIdx));
+    }
 
     switch (path) {
       case "/":
         httpResponse.setStatusCode(200);
+
+        httpResponse.setHeader("Host", "localhost:4221");
+        httpResponse.setHeader("User-Agent", "curl/7.64.1");
+        httpResponse.setHeader("Accpet", "*/*");
+
         break;
       default:
         httpResponse.setStatusCode(404);
+
+        httpResponse.setHeader("Host", "localhost:4221");
+        httpResponse.setHeader("User-Agent", "curl/7.64.1");
+        httpResponse.setHeader("Accpet", "*/*");
     }
 
     socket.write(httpResponse.toString());

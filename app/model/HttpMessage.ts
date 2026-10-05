@@ -7,6 +7,7 @@ export class HttpMessage {
   protected version: string = "1.1";
   protected statusCode: StatusCode = 200;
   protected headers: Map<string, string> = new Map();
+  protected body: String = "";
 
   constructor() {}
 
@@ -63,5 +64,14 @@ export class HttpMessage {
   setHeader = (k: string, v: string) => {
     // TODO: Validation requried. See: https://datatracker.ietf.org/doc/html/rfc7230#section-3.2
     this.headers.set(k, v);
+  };
+
+  getBody = () => {
+    return this.body;
+  };
+
+  setBody = (body: string) => {
+    // TODO: Validation requried.
+    this.body = body;
   };
 }
