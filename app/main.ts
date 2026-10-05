@@ -1,6 +1,5 @@
 import * as net from "net";
 import { HttpResponse } from "./model/HttpResponse";
-import { config } from "./config";
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
@@ -25,4 +24,4 @@ const server = net.createServer((socket) => {
   socket.write(response.toString());
 });
 
-server.listen(config.port, config.host);
+server.listen(4221, "localhost");
