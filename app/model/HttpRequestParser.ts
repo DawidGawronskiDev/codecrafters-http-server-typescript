@@ -4,7 +4,11 @@ class HttpRequestParser {
   public parse = (request: string): HttpRequest => {
     const httpRequest = new HttpRequest();
 
-    const splittedRequest = request.trim().split("\r\n");
+    const headEnd = request.indexOf("\r\n\r\n");
+    const head = headEnd === -1 ? request : request.slice(0, headEnd);
+    const body = headEnd === -1 ? "" : request.slice(headEnd + 4);
+
+    const splittedRequest = head.split("\r\n");
 
     /**
      * Parse status line
@@ -24,6 +28,8 @@ class HttpRequestParser {
       .slice(1)
       .filter((l) => l.length > 0)
       .map((l) => httpRequest.setHeader(l.split(": ")[0], l.split(": ")[1]));
+
+    httpRequest.setBody(body);
 
     return httpRequest;
   };
