@@ -25,11 +25,14 @@ const server = net.createServer((socket) => {
     if (path.startsWith("/echo")) {
       // TODO: Validation required. Index might be not present.
       const secondSlashIdx = path.indexOf("/", 1);
+      const message = path.slice(secondSlashIdx);
+
+      const buffer = Buffer.from(message);
 
       httpResponse.setStatusCode(200);
 
       httpResponse.setHeader("Content-Type", "text/plain");
-      httpResponse.setHeader("Content-Length", path.length.toString());
+      httpResponse.setHeader("Content-Length", buffer.byteLength.toString());
 
       httpResponse.setBody(path.slice(secondSlashIdx));
     }
