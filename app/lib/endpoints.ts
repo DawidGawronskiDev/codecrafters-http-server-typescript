@@ -67,13 +67,17 @@ export const endpoints: Map<string, Function> = new Map([
           res.setStatusCode(404);
           return;
         }
+
         res.setStatusCode(200);
+
         res.setHeader("Content-Type", "application/octet-stream");
         res.setHeader(
           "Content-Length",
           Buffer.from(data).byteLength.toString(),
         );
         res.setBody(data.toString());
+
+        console.log(res.toString());
       });
     },
   ],
