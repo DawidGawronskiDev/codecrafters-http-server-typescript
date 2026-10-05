@@ -25,7 +25,7 @@ const server = net.createServer((socket) => {
     if (path.startsWith("/echo")) {
       // TODO: Validation required. Index might be not present.
       const secondSlashIdx = path.indexOf("/", 1);
-      const message = path.slice(secondSlashIdx);
+      const message = path.slice(secondSlashIdx + 1);
 
       console.log("*****", message);
 
