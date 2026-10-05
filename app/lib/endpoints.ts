@@ -62,23 +62,19 @@ export const endpoints: Map<string, Function> = new Map([
 
       const file = path.slice(path.lastIndexOf("/") + 1);
 
-      fs.readFile(`${config.directory}/${file}`, (err, data) => {
-        if (err) {
-          res.setStatusCode(404);
-          return;
-        }
+      let data: Buffer;
+      try {
+        // blocks the event loop while reading; switch to async handlers if files get big
+        data = fs.readFileSync(`${config.directory}/${file}`);
+      } catch {
+        res.setStatusCode(404);
+        return;
+      }
 
-        res.setStatusCode(200);
-
-        res.setHeader("Content-Type", "application/octet-stream");
-        res.setHeader(
-          "Content-Length",
-          Buffer.from(data).byteLength.toString(),
-        );
-        res.setBody(data.toString());
-
-        console.log(res.toString());
-      });
+      res.setStatusCode(200);
+      res.setHeader("Content-Type", "application/octet-stream");
+      res.setHeader("Content-Length", data.byteLength.toString());
+      res.setBody(data.toString());
     },
   ],
 ]);
