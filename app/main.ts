@@ -11,9 +11,16 @@ const server = net.createServer((socket) => {
   });
 
   const response: HttpResponse = new HttpResponse();
+
+  // Set status line
   response.setVersion("1.1");
   response.setMethod("GET");
   response.setStatusCode(200);
+
+  // Set headers
+  response.setHeader("Host", "localhost:4221");
+  response.setHeader("User-Agent", "curl/7.64.1");
+  response.setHeader("Accpet", "*/*");
 
   socket.write(response.toString());
 });
