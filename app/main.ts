@@ -1,6 +1,6 @@
 import * as net from "net";
 import { HttpResponse } from "./model/HttpResponse";
-import { httpRequestHandler } from "./model/HttpRequestHandler";
+import { HttpRequest } from "./model/HttpRequest";
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
@@ -12,23 +12,31 @@ const server = net.createServer((socket) => {
 
   socket.on("data", (data) => {
     const request = data.toString();
+    const lines = request.split("\r\n");
 
-    console.log(httpRequestHandler.handle(request));
+    const path = lines[0].split(" ")[1];
+
+    const httpResponse: HttpResponse = new HttpResponse();
+
+    // Set status line
+    httpResponse.setVersion("1.1");
+    httpResponse.setMethod("GET");
+
+    // Set headers
+    httpResponse.setHeader("Host", "localhost:4221");
+    httpResponse.setHeader("User-Agent", "curl/7.64.1");
+    httpResponse.setHeader("Accpet", "*/*");
+
+    switch (path) {
+      case "/":
+        httpResponse.setStatusCode(200);
+        break;
+      default:
+        httpResponse.setStatusCode(404);
+    }
+
+    socket.write(httpResponse.toString());
   });
-
-  const response: HttpResponse = new HttpResponse();
-
-  // Set status line
-  response.setVersion("1.1");
-  response.setMethod("GET");
-  response.setStatusCode(200);
-
-  // Set headers
-  response.setHeader("Host", "localhost:4221");
-  response.setHeader("User-Agent", "curl/7.64.1");
-  response.setHeader("Accpet", "*/*");
-
-  socket.write(response.toString());
 });
 
 server.listen(4221, "localhost");
