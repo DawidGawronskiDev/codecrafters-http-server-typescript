@@ -19,7 +19,9 @@ export const endpoints: Map<string, Function> = new Map([
     "/echo",
     (req: string, res: HttpResponse) => {
       const httpRequest = httpRequestParser.parse(req);
-      const message = httpRequest.getBody();
+      const path = httpRequest.getPath();
+
+      const message = path.slice(path.lastIndexOf("/") + 1);
 
       res.setStatusCode(200);
 
@@ -64,7 +66,6 @@ export const endpoints: Map<string, Function> = new Map([
 
       let data: Buffer;
       try {
-        // blocks the event loop while reading; switch to async handlers if files get big
         data = fs.readFileSync(`${config.directory}/${file}`);
       } catch {
         res.setStatusCode(404);
