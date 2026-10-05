@@ -1,3 +1,5 @@
+import fs from "fs";
+
 import { HttpResponse } from "../model/HttpResponse";
 import { httpRequestParser } from "../model/HttpRequestParser";
 import { config } from "../config";
@@ -56,12 +58,23 @@ export const endpoints: Map<string, Function> = new Map([
       }
 
       const httpRequest = httpRequestParser.parse(req);
+      const path = httpRequest.getPath();
 
-      const file = httpRequest
-        .getPath()
-        .slice(httpRequest.getPath().lastIndexOf("/") + 1);
+      const file = path.slice(path.lastIndexOf("/") + 1);
 
-      console.log(file);
+      fs.readFile(`${config.directory}/${file}`, (err, data) => {
+        if (err) {
+          res.setStatusCode(404);
+          return;
+        }
+        res.setStatusCode(200);
+        res.setHeader("Content-Type", "application/octet-stream");
+        res.setHeader(
+          "Content-Length",
+          Buffer.from(data).byteLength.toString(),
+        );
+        res.setBody(data.toString());
+      });
     },
   ],
 ]);
