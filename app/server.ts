@@ -21,7 +21,11 @@ export const server = net.createServer((socket) => {
     const httpRequest = httpRequestParser.parse(request);
     const httpResponse: HttpResponse = new HttpResponse();
 
-    const endpoint = endpoints.get(httpRequest.getPath());
+    const path = httpRequest.getPath();
+
+    const endpoint = [...endpoints].find(
+      ([prefix]) => path === prefix || path.startsWith(`${prefix}/`),
+    )?.[1];
 
     if (endpoint) {
       endpoint(request, httpResponse);
