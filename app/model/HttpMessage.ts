@@ -7,7 +7,7 @@ export class HttpMessage {
   protected version: string = "1.1";
   protected statusCode: StatusCode = 200;
   protected headers: Map<string, string> = new Map();
-  protected body: String = "";
+  protected body: string = "";
 
   constructor() {}
 

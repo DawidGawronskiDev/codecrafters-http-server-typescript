@@ -1,7 +1,7 @@
 import { HttpMessage } from "./HttpMessage";
 
 export class HttpRequest extends HttpMessage {
-  private path: String = "/";
+  private path: string = "/";
 
   constructor() {
     super();
@@ -28,7 +28,7 @@ const main = () => {
   const response: HttpRequest = new HttpRequest();
   response.setHeader("Host", "localhost:4221");
   response.setHeader("User-Agent", "curl/7.64.1");
-  response.setHeader("Accpet", "*/*");
+  response.setHeader("Accept", "*/*");
   console.log(response.toString());
 };
 
