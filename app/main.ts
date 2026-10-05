@@ -11,6 +11,7 @@ const server = net.createServer((socket) => {
 
   socket.on("data", (data) => {
     console.log(data);
+    console.log(Buffer.from(data).toHex());
   });
 
   const response: HttpResponse = new HttpResponse();
