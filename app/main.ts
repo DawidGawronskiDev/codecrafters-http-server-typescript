@@ -10,8 +10,8 @@ const server = net.createServer((socket) => {
   });
 
   socket.on("data", (data) => {
-    console.log(data);
-    console.log(Buffer.from(data).toHex());
+    const request = data.toString();
+    console.log(request);
   });
 
   const response: HttpResponse = new HttpResponse();
