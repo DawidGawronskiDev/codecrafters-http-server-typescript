@@ -1,5 +1,6 @@
 import * as net from "net";
 import { HttpResponse } from "./model/HttpResponse";
+import { httpRequestHandler } from "./model/HttpRequestHandler";
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
@@ -11,7 +12,8 @@ const server = net.createServer((socket) => {
 
   socket.on("data", (data) => {
     const request = data.toString();
-    console.log(request);
+
+    console.log(httpRequestHandler.handle(request));
   });
 
   const response: HttpResponse = new HttpResponse();
