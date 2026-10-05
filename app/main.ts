@@ -1,3 +1,5 @@
+import { config } from "./config";
 import { server } from "./server";
 
-server.listen(4221, "localhost");
+const { port, host } = config;
+server.listen(port, host);

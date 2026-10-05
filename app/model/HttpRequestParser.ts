@@ -1,12 +1,12 @@
 import { HttpRequest } from "./HttpRequest";
 
 class HttpRequestParser {
-  public parse = (request: string): HttpRequest => {
+  public parse = (req: string): HttpRequest => {
     const httpRequest = new HttpRequest();
 
-    const headEnd = request.indexOf("\r\n\r\n");
-    const head = headEnd === -1 ? request : request.slice(0, headEnd);
-    const body = headEnd === -1 ? "" : request.slice(headEnd + 4);
+    const headEnd = req.indexOf("\r\n\r\n");
+    const head = headEnd === -1 ? req : req.slice(0, headEnd);
+    const body = headEnd === -1 ? "" : req.slice(headEnd + 4);
 
     const splittedRequest = head.split("\r\n");
 
