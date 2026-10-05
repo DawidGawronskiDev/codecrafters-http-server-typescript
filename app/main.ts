@@ -27,6 +27,8 @@ const server = net.createServer((socket) => {
       const secondSlashIdx = path.indexOf("/", 1);
       const message = path.slice(secondSlashIdx);
 
+      console.log("*****", message);
+
       const buffer = Buffer.from(message);
 
       httpResponse.setStatusCode(200);
@@ -34,7 +36,7 @@ const server = net.createServer((socket) => {
       httpResponse.setHeader("Content-Type", "text/plain");
       httpResponse.setHeader("Content-Length", buffer.byteLength.toString());
 
-      httpResponse.setBody(path.slice(secondSlashIdx - 1));
+      httpResponse.setBody(message);
 
       socket.write(httpResponse.toString());
       return;
