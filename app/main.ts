@@ -35,6 +35,9 @@ const server = net.createServer((socket) => {
       httpResponse.setHeader("Content-Length", buffer.byteLength.toString());
 
       httpResponse.setBody(path.slice(secondSlashIdx));
+
+      socket.write(httpResponse.toString());
+      return;
     }
 
     switch (path) {
