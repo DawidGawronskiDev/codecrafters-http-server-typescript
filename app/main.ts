@@ -1,6 +1,6 @@
 import * as net from "net";
 import { HttpResponse } from "./model/HttpResponse";
-import { HttpRequest } from "./model/HttpRequest";
+import { httpRequestParser } from "./model/HttpRequestParser";
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
@@ -25,16 +25,16 @@ const server = net.createServer((socket) => {
     if (path.startsWith("/echo")) {
       // TODO: Validation required. Index might be not present.
       const secondSlashIdx = path.indexOf("/", 1);
+
       const message = path.slice(secondSlashIdx + 1);
-
-      console.log("*****", message);
-
-      const buffer = Buffer.from(message);
 
       httpResponse.setStatusCode(200);
 
       httpResponse.setHeader("Content-Type", "text/plain");
-      httpResponse.setHeader("Content-Length", buffer.byteLength.toString());
+      httpResponse.setHeader(
+        "Content-Length",
+        Buffer.from(message).byteLength.toString(),
+      );
 
       httpResponse.setBody(message);
 
@@ -49,7 +49,27 @@ const server = net.createServer((socket) => {
         httpResponse.setHeader("Host", "localhost:4221");
         httpResponse.setHeader("User-Agent", "curl/7.64.1");
         httpResponse.setHeader("Accpet", "*/*");
+        break;
+      case "/user-agent":
+        const httpRequest = httpRequestParser.parse(request);
 
+        const userAgent = httpRequest.getHeader("User-Agent");
+        if (!userAgent) {
+          httpResponse.setStatusCode(400);
+
+          socket.write(httpRequest.toString());
+          return;
+        }
+
+        httpResponse.setStatusCode(200);
+
+        httpResponse.setHeader("Content-Type", "text/plain");
+        httpResponse.setHeader(
+          "Content-Length",
+          Buffer.from(httpRequest.getPath()).byteLength.toString(),
+        );
+
+        httpResponse.setBody(userAgent);
         break;
       default:
         httpResponse.setStatusCode(404);
