@@ -9,6 +9,10 @@ const server = net.createServer((socket) => {
     socket.end();
   });
 
+  socket.on("data", (data) => {
+    console.log(data);
+  });
+
   const response: HttpResponse = new HttpResponse();
 
   // Set status line
