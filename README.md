@@ -1,37 +1,95 @@
 [![progress-banner](https://backend.codecrafters.io/progress/http-server/cae7fb7a-e746-4329-b82a-423f2645f231)](https://app.codecrafters.io/users/DawidGawronskiDev?r=2qF)
 
-This is a starting point for TypeScript solutions to the
-["Build Your Own HTTP server" Challenge](https://app.codecrafters.io/courses/http-server/overview).
+# HTTP server in TypeScript
 
-[HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) is the
-protocol that powers the web. In this challenge, you'll build a HTTP/1.1 server
-that is capable of serving multiple clients.
+A small HTTP/1.1 server built directly on TCP sockets (`net`), with no HTTP
+library. Written for the CodeCrafters
+["Build Your Own HTTP server" challenge](https://app.codecrafters.io/courses/http-server/overview).
 
-Along the way you'll learn about TCP servers,
-[HTTP request syntax](https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html),
-and more.
+Requests are parsed by hand from the raw socket data, routed by path prefix,
+and serialized back into a response string.
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+## Requirements
 
-# Passing the first stage
+- [Bun](https://bun.sh) 1.3+
 
-The entry point for your HTTP server implementation is in `app/main.ts`. Study
-and uncomment the relevant code, and then run the command below to execute the
-tests on our servers:
+## Running
+
+```sh
+bun install
+./your_program.sh --directory /tmp/files
+```
+
+The server listens on `127.0.0.1:4221`. The `--directory` flag is optional and
+only needed for the `/files` endpoints.
+
+## Endpoints
+
+| Method | Path                | Response                                                    |
+| ------ | ------------------- | ----------------------------------------------------------- |
+| GET    | `/`                 | `200 OK`, empty body                                        |
+| GET    | `/echo/{text}`      | `200 OK`, `{text}` as `text/plain`                          |
+| GET    | `/user-agent`       | `200 OK`, the request's `User-Agent` header as `text/plain` |
+| GET    | `/files/{filename}` | `200 OK`, file contents as `application/octet-stream`       |
+| POST   | `/files/{filename}` | `201 Created`, request body written to the file             |
+
+Anything else returns `404 Not Found`. `/files` returns `400 Bad Request` when
+the server was started without `--directory`, and `404` when the file does not
+exist.
+
+## Examples
+
+```sh
+curl -i http://localhost:4221/echo/hello
+curl -i http://localhost:4221/user-agent
+curl -i --data "some content" http://localhost:4221/files/note.txt
+curl -i http://localhost:4221/files/note.txt
+```
+
+## Project structure
+
+```
+app/
+├── main.ts              entry point, starts the listener
+├── server.ts            TCP server, CLI flags, routing
+├── config.ts            host, port, files directory
+├── utils.ts             method and status code validators
+├── lib/
+│   ├── endpoints.ts     path prefix -> handler map
+│   ├── parse.ts         raw request string -> HttpRequest
+│   ├── methods.ts       HTTP method list and type
+│   └── statusCodes.ts   status code -> reason phrase
+└── model/
+    ├── HttpMessage.ts   shared base: version, headers, body
+    ├── HttpRequest.ts   adds the request path
+    └── HttpResponse.ts  serializes the response
+```
+
+## Adding an endpoint
+
+Add an entry to the map in `app/lib/endpoints.ts`. The key matches the exact
+path and anything below it (`/echo` matches `/echo` and `/echo/abc`):
+
+```ts
+[
+  "/ping",
+  (_req, res) => {
+    res.setHeader("Content-Type", "text/plain");
+    res.setHeader("Content-Length", "4");
+    res.setBody("pong");
+  },
+],
+```
+
+## Known limitations
+
+- A request is assumed to arrive in a single TCP chunk; large bodies split
+  across packets are not reassembled.
+- Bodies are handled as strings, so binary files are not served byte-exact.
+- No compression, no `Connection: close` handling, no HTTPS.
+
+## Testing
 
 ```sh
 codecrafters submit
 ```
-
-Time to move on to the next stage!
-
-# Stage 2 & beyond
-
-Note: This section is for stages 2 and beyond.
-
-1. Ensure you have `bun (1.3)` installed locally
-1. Run `./your_program.sh` to run your program, which is implemented in
-   `app/main.ts`.
-1. Run `codecrafters submit` to submit your solution to CodeCrafters. Test
-   output will be streamed to your terminal.
